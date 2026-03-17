@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediSync — Smart Hospital Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C0392B;
+    --red-dark: #922B21;
+    --red-light: #FADBD8;
+    --red-mid: #E74C3C;
+    --blue: #1A5276;
+    --blue-dark: #0D2E4D;
+    --blue-mid: #2980B9;
+    --blue-light: #D6EAF8;
+    --white: #FFFFFF;
+    --off-white: #F8F9FA;
+    --gray-50: #F2F3F4;
+    --gray-100: #E5E7E9;
+    --gray-400: #85929E;
+    --gray-700: #2C3E50;
+    --success: #1E8449;
+    --success-light: #D5F5E3;
+    --warn: #B7770D;
+    --warn-light: #FEF9E7;
+    --font-head: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-body); background: var(--off-white); color: var(--gray-700); font-size: 15px; line-height: 1.6; }
+
+  /* NAV */
+  nav { background: var(--blue-dark); color: #fff; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+  .nav-logo { font-family: var(--font-head); font-size: 1.5rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+  .nav-logo span { color: var(--red-mid); }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links button { background: none; border: none; color: rgba(255,255,255,0.75); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 500; transition: all 0.2s; }
+  .nav-links button:hover, .nav-links button.active { background: rgba(255,255,255,0.12); color: #fff; }
+  .nav-right { display: flex; gap: 10px; align-items: center; }
+  .btn-nav { padding: 7px 18px; border-radius: 6px; border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; transition: all 0.18s; }
+  .btn-nav.outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.4); color: #fff; }
+  .btn-nav.outline:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+  .btn-nav.primary { background: var(--red-mid); color: #fff; }
+  .btn-nav.primary:hover { background: var(--red); }
+
+  /* SECTIONS */
+  section { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  section.active { display: block; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 50%, #1B4F72 100%); color: #fff; padding: 0; max-width: 100%; margin: 0; }
+  .hero-inner { max-width: 1100px; margin: 0 auto; padding: 4rem 2rem 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+  .hero h1 { font-family: var(--font-head); font-size: 2.8rem; line-height: 1.2; margin-bottom: 1rem; }
+  .hero h1 span { color: var(--red-mid); }
+  .hero p { color: rgba(255,255,255,0.8); font-size: 1.05rem; margin-bottom: 2rem; }
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-hero { padding: 12px 28px; border-radius: 8px; border: none; cursor: pointer; font-family: var(--font-body); font-size: 15px; font-weight: 600; transition: all 0.2s; }
+  .btn-hero.primary { background: var(--red-mid); color: #fff; }
+  .btn-hero.primary:hover { background: var(--red); transform: translateY(-1px); }
+  .btn-hero.secondary { background: rgba(255,255,255,0.12); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); }
+  .btn-hero.secondary:hover { background: rgba(255,255,255,0.2); }
+  .hero-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .hero-card { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 1.2rem; backdrop-filter: blur(6px); }
+  .hero-card .icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .hero-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .hero-card p { font-size: 12px; color: rgba(255,255,255,0.65); }
+  .features-strip { background: var(--red); padding: 1rem 2rem; max-width: 100%; margin: 0; }
+  .features-strip-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+  .feat-item { color: #fff; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .feat-item::before { content: '✓'; font-weight: 700; opacity: 0.9; }
+
+  /* CARDS & COMMON */
+  .card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .card-title { font-family: var(--font-head); font-size: 1.2rem; color: var(--blue-dark); margin-bottom: 1rem; border-bottom: 2px solid var(--red-light); padding-bottom: 0.6rem; }
+  .section-header { margin-bottom: 2rem; }
+  .section-header h2 { font-family: var(--font-head); font-size: 1.8rem; color: var(--blue-dark); margin-bottom: 0.4rem; }
+  .section-header p { color: var(--gray-400); font-size: 14px; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
+  .badge-red { background: var(--red-light); color: var(--red-dark); }
+  .badge-green { background: var(--success-light); color: var(--success); }
+  .badge-warn { background: var(--warn-light); color: var(--warn); }
+  .btn { padding: 9px 20px; border-radius: 7px; border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; transition: all 0.18s; }
+  .btn-primary { background: var(--red-mid); color: #fff; }
+  .btn-primary:hover { background: var(--red); }
+  .btn-blue { background: var(--blue); color: #fff; }
+  .btn-blue:hover { background: var(--blue-dark); }
+  .btn-outline { background: transparent; border: 1.5px solid var(--gray-100); color: var(--gray-700); }
+  .btn-outline:hover { border-color: var(--blue-mid); color: var(--blue); }
+  input, select, textarea { width: 100%; padding: 10px 14px; border: 1.5px solid var(--gray-100); border-radius: 8px; font-family: var(--font-body); font-size: 14px; color: var(--gray-700); background: var(--white); transition: border 0.2s; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue-mid); }
+  label { font-size: 13px; font-weight: 500; color: var(--gray-400); display: block; margin-bottom: 5px; }
+  .form-group { margin-bottom: 1rem; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+  /* LOGIN */
+  .login-wrap { min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--gray-50); }
+  .login-box { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 2.5rem; width: 100%; max-width: 440px; }
+  .login-box h2 { font-family: var(--font-head); font-size: 1.6rem; color: var(--blue-dark); text-align: center; margin-bottom: 0.4rem; }
+  .login-box .sub { text-align: center; color: var(--gray-400); font-size: 13px; margin-bottom: 1.8rem; }
+  .tabs-login { display: flex; background: var(--gray-50); border-radius: 8px; padding: 4px; margin-bottom: 1.5rem; }
+  .tabs-login button { flex: 1; padding: 8px; border: none; background: none; cursor: pointer; border-radius: 6px; font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--gray-400); transition: all 0.2s; }
+  .tabs-login button.active { background: var(--white); color: var(--blue-dark); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+  .login-divider { text-align: center; color: var(--gray-400); font-size: 12px; margin: 1rem 0; position: relative; }
+  .login-divider::before, .login-divider::after { content: ''; position: absolute; top: 50%; width: 42%; height: 1px; background: var(--gray-100); }
+  .login-divider::before { left: 0; } .login-divider::after { right: 0; }
+  .social-btn { width: 100%; padding: 10px; border: 1.5px solid var(--gray-100); border-radius: 8px; background: var(--white); cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--gray-700); display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; margin-bottom: 10px; }
+  .social-btn:hover { border-color: var(--blue-mid); background: var(--blue-light); }
+  .logo-badge { width: 52px; height: 52px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+  .logo-badge svg { width: 28px; height: 28px; fill: white; }
+
+  /* DASHBOARD */
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.2rem; text-align: center; border-top: 3px solid transparent; }
+  .stat-card.red { border-top-color: var(--red-mid); }
+  .stat-card.blue { border-top-color: var(--blue-mid); }
+  .stat-card.green { border-top-color: var(--success); }
+  .stat-card.warn { border-top-color: var(--warn); }
+  .stat-num { font-family: var(--font-head); font-size: 2rem; font-weight: 700; }
+  .stat-label { font-size: 12px; color: var(--gray-400); font-weight: 500; margin-top: 2px; }
+
+  /* MEDICINE SEARCH */
+  .search-big { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+  .search-big input { flex: 1; font-size: 15px; padding: 12px 16px; }
+  .search-big button { padding: 12px 24px; white-space: nowrap; }
+  .result-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--gray-100); padding: 1.2rem; margin-bottom: 1rem; transition: all 0.2s; }
+  .result-card:hover { border-color: var(--blue-mid); box-shadow: var(--shadow); }
+  .result-card h3 { font-size: 15px; font-weight: 600; color: var(--blue-dark); margin-bottom: 6px; }
+  .result-card .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .result-card p { font-size: 13px; color: var(--gray-400); line-height: 1.5; }
+  .avail-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+  .avail-dot.green { background: var(--success); }
+  .avail-dot.red { background: var(--red-mid); }
+  .avail-dot.warn { background: #E67E22; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--gray-100); margin-bottom: 1.5rem; }
+  .tabs button { padding: 9px 18px; border: none; background: none; cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--gray-400); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+  .tabs button.active { color: var(--red); border-bottom-color: var(--red); }
+
+  /* PRESCRIPTION */
+  .rx-card { background: var(--white); border: 2px solid var(--blue-dark); border-radius: var(--radius-lg); padding: 1.5rem; max-width: 600px; position: relative; overflow: hidden; }
+  .rx-card::before { content: 'VALID'; position: absolute; top: 18px; right: -22px; background: var(--success); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 30px; transform: rotate(35deg); }
+  .rx-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-100); }
+  .rx-logo { width: 44px; height: 44px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; }
+  .rx-stamp { background: var(--blue-dark); color: #fff; border-radius: 8px; padding: 8px 16px; text-align: center; font-size: 12px; font-weight: 600; margin-top: 1rem; }
+  .stamp-ring { border: 2px solid rgba(255,255,255,0.4); border-radius: 6px; padding: 4px 12px; display: inline-block; letter-spacing: 1px; }
+  .upload-zone { border: 2px dashed var(--gray-100); border-radius: var(--radius); padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--gray-50); }
+  .upload-zone:hover { border-color: var(--blue-mid); background: var(--blue-light); }
+  .upload-zone .icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+  .upload-zone p { color: var(--gray-400); font-size: 14px; }
+
+  /* EMERGENCY */
+  .emergency-banner { background: var(--red); color: #fff; border-radius: var(--radius); padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 14px; }
+  .emergency-banner .pulse { width: 14px; height: 14px; border-radius: 50%; background: #fff; animation: pulse 1.2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
+  .country-section { margin-bottom: 1.5rem; }
+  .country-title { font-size: 14px; font-weight: 600; color: var(--blue-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .em-numbers { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  .em-num-card { background: var(--white); border-radius: 8px; border: 1.5px solid var(--gray-100); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .em-num-card .service { font-size: 13px; font-weight: 500; color: var(--gray-700); }
+  .em-num-card .number { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: var(--red); }
+
+  /* DISEASE CHECKER */
+  .dis-result { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 1.5rem; }
+  .dis-result h3 { font-family: var(--font-head); font-size: 1.3rem; color: var(--blue-dark); margin-bottom: 1rem; }
+  .dis-section { margin-bottom: 1.2rem; }
+  .dis-section h4 { font-size: 13px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .tag-sym { background: var(--red-light); color: var(--red-dark); }
+  .tag-pre { background: var(--blue-light); color: var(--blue-dark); }
+  .tag-med { background: var(--success-light); color: var(--success); }
+
+  /* INVENTORY */
+  .inv-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .inv-table th { background: var(--blue-dark); color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; }
+  .inv-table th:first-child { border-radius: 8px 0 0 0; }
+  .inv-table th:last-child { border-radius: 0 8px 0 0; }
+  .inv-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-50); }
+  .inv-table tr:hover td { background: var(--gray-50); }
+  .stock-bar { height: 6px; border-radius: 3px; background: var(--gray-100); overflow: hidden; }
+  .stock-fill { height: 100%; border-radius: 3px; }
+
+  /* PATIENT MEDICATION */
+  .med-card { background: var(--white); border-radius: var(--radius); border-left: 4px solid var(--blue-mid); padding: 1rem 1.2rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
+  .med-card .med-info h4 { font-size: 14px; font-weight: 600; color: var(--blue-dark); }
+  .med-card .med-info p { font-size: 12px; color: var(--gray-400); }
+  .med-time { font-size: 12px; font-weight: 600; color: var(--red); background: var(--red-light); padding: 4px 10px; border-radius: 6px; }
+  .family-member { display: flex; align-items: center; gap: 12px; padding: 10px; background: var(--gray-50); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+  .family-member:hover { background: var(--blue-light); }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
+
+  /* DOCTOR PANEL */
+  .patient-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gray-50); }
+  .patient-row:last-child { border-bottom: none; }
+  .patient-info { display: flex; align-items: center; gap: 12px; }
+  .patient-info .det h4 { font-size: 14px; font-weight: 600; }
+  .patient-info .det p { font-size: 12px; color: var(--gray-400); }
+
+  /* FOOTER */
+  footer { background: var(--blue-dark); color: rgba(255,255,255,0.7); text-align: center; padding: 1.5rem; font-size: 12px; margin-top: 3rem; }
+  footer strong { color: #fff; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.hidden { display: none; }
+  .modal-box { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 2rem; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+  .modal-box h3 { font-family: var(--font-head); font-size: 1.3rem; color: var(--blue-dark); margin-bottom: 1rem; }
+  .modal-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray-400); margin-top: -4px; }
+  .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 1rem; }
+  .alert-info { background: var(--blue-light); color: var(--blue-dark); border-left: 3px solid var(--blue-mid); }
+  .alert-warn { background: var(--warn-light); color: var(--warn); border-left: 3px solid var(--warn); }
+
+  @media(max-width:768px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-cards { display: none; }
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    nav .nav-links { display: none; }
+    .hero h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2L4 7v5c0 5.25 3.41 10.15 8 11.34C16.59 22.15 20 17.25 20 12V7L12 2z" fill="white" opacity="0.9"/>
+      <path d="M11 7h2v4h4v2h-4v4h-2v-4H7v-2h4V7z" fill="#E74C3C"/>
+    </svg>
+    Medi<span>Sync</span>
+  </div>
+  <div class="nav-links">
+    <button class="active" onclick="showSection('home')">Home</button>
+    <button onclick="showSection('medicines')">Medicines</button>
+    <button onclick="showSection('disease')">Disease Info</button>
+    <button onclick="showSection('emergency')">Emergency</button>
+  </div>
+  <div class="nav-right">
+    <button class="btn-nav outline" onclick="showLogin('patient')">Patient Login</button>
+    <button class="btn-nav primary" onclick="showLogin('doctor')">Doctor Login</button>
+  </div>
+</nav>
+
+<!-- HOME SECTION -->
+<section id="home" class="active" style="padding:0;max-width:100%;">
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="badge badge-red" style="margin-bottom:1rem;">🏥 Smart Hospital Network</span>
+        <h1>Medicine Availability <span>Real-Time</span> for Better Care</h1>
+        <p>Doctors prescribe smarter. Patients monitor better. Hospitals stay connected. MediSync bridges the gap between prescription and availability.</p>
+        <div class="hero-btns">
+          <button class="btn-hero primary" onclick="showLogin('patient')">Patient Portal</button>
+          <button class="btn-hero secondary" onclick="showLogin('doctor')">Doctor Access</button>
+          <button class="btn-hero secondary" onclick="showSection('emergency')">🚨 Emergency Numbers</button>
+        </div>
+      </div>
+      <div class="hero-cards">
+        <div class="hero-card">
+          <div class="icon">💊</div>
+          <h3>Live Inventory</h3>
+          <p>Real-time hospital medicine availability</p>
+        </div>
+        <div class="hero-card">
+          <div class="icon">🩺</div>
+          <h3>Doctor Verified</h3>
+          <p>Digital prescriptions with secure stamps</p>
+        </div>
+        <div class="hero-card">
+          <div class="icon">👨‍👩‍👧</div>
+          <h3>Family Health</h3>
+          <p>Track medication for your whole family</p>
+        </div>
+        <div class="hero-card">
+          <div class="icon">🔍</div>
+          <h3>Disease Info</h3>
+          <p>Symptoms, precautions & treatments</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="features-strip">
+    <div class="features-strip-inner">
+      <div class="feat-item">HIPAA-Compliant Security</div>
+      <div class="feat-item">Digital Prescription Stamps</div>
+      <div class="feat-item">Real-Time Stock Updates</div>
+      <div class="feat-item">Family Health Monitoring</div>
+      <div class="feat-item">Global Emergency Directory</div>
+    </div>
+  </div>
+  <div style="max-width:1100px;margin:0 auto;padding:2rem;">
+    <div class="section-header"><h2>How MediSync Works</h2><p>A seamless flow from hospital inventory to patient care</p></div>
+    <div class="grid3">
+      <div class="card" style="text-align:center;border-top:3px solid var(--red);">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">🏥</div>
+        <h3 style="font-family:var(--font-head);color:var(--blue-dark);margin-bottom:0.5rem;">Hospital Updates Inventory</h3>
+        <p style="color:var(--gray-400);font-size:13px;">Pharmacists and staff update real-time stock of medicines and supplements available in the hospital.</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--blue-mid);">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">👨‍⚕️</div>
+        <h3 style="font-family:var(--font-head);color:var(--blue-dark);margin-bottom:0.5rem;">Doctor Prescribes Digitally</h3>
+        <p style="color:var(--gray-400);font-size:13px;">Verified doctors see live availability and issue digitally stamped prescriptions — no paper needed.</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--success);">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">👤</div>
+        <h3 style="font-family:var(--font-head);color:var(--blue-dark);margin-bottom:0.5rem;">Patient Manages Health</h3>
+        <p style="color:var(--gray-400);font-size:13px;">Patients track their medication, upload prescriptions, and monitor their family's health — all in one place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEDICINES SECTION -->
+<section id="medicines">
+  <div class="section-header">
+    <h2>Medicine & Supplement Search</h2>
+    <p>Search any medicine to find uses, precautions, and hospital availability</p>
+  </div>
+  <div class="card">
+    <div class="search-big">
+      <input type="text" id="med-search" placeholder="Search medicine name, generic name, or condition..." oninput="searchMeds()" />
+      <button class="btn btn-primary" onclick="searchMeds()">Search</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
+      <span style="font-size:12px;color:var(--gray-400);">Quick search:</span>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="quickSearch('Paracetamol')">Paracetamol</button>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="quickSearch('Amoxicillin')">Amoxicillin</button>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="quickSearch('Ibuprofen')">Ibuprofen</button>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="quickSearch('Metformin')">Metformin</button>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="quickSearch('Atorvastatin')">Atorvastatin</button>
+    </div>
+  </div>
+  <div id="med-results"></div>
+</section>
+
+<!-- DISEASE SECTION -->
+<section id="disease">
+  <div class="section-header">
+    <h2>Disease & Condition Information</h2>
+    <p>Enter a disease or condition to view symptoms, precautions, and recommended medications</p>
+  </div>
+  <div class="card">
+    <div class="search-big">
+      <input type="text" id="dis-search" placeholder="Enter disease or condition (e.g. Diabetes, Hypertension, Flu...)" />
+      <button class="btn btn-primary" onclick="searchDisease()">Check</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:12px;color:var(--gray-400);">Common:</span>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="lookupDisease('Diabetes')">Diabetes</button>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="lookupDisease('Hypertension')">Hypertension</button>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="lookupDisease('Influenza')">Influenza</button>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="lookupDisease('Asthma')">Asthma</button>
+      <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="lookupDisease('Malaria')">Malaria</button>
+    </div>
+  </div>
+  <div id="dis-result"></div>
+</section>
+
+<!-- EMERGENCY SECTION -->
+<section id="emergency">
+  <div class="section-header">
+    <h2>Global Emergency Numbers</h2>
+    <p>Emergency contact numbers by country — always accessible, no login required</p>
+  </div>
+  <div class="emergency-banner">
+    <div class="pulse"></div>
+    <div>
+      <strong>Emergency Alert:</strong> In a life-threatening situation, always call your local emergency services immediately. This directory is for reference only.
+    </div>
+  </div>
+  <div id="emergency-list"></div>
+</section>
+
+<!-- PATIENT DASHBOARD (shown after patient login) -->
+<section id="patient-dashboard">
+  <div class="section-header">
+    <h2>Welcome, Priya Sharma</h2>
+    <p>Patient ID: PAT-20241205 &nbsp;|&nbsp; <span class="badge badge-green">Active</span></p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card red"><div class="stat-num">4</div><div class="stat-label">Active Medications</div></div>
+    <div class="stat-card blue"><div class="stat-num">3</div><div class="stat-label">Family Members</div></div>
+    <div class="stat-card green"><div class="stat-num">6</div><div class="stat-label">Prescriptions</div></div>
+    <div class="stat-card warn"><div class="stat-num">1</div><div class="stat-label">Refill Needed</div></div>
+  </div>
+  <div class="tabs">
+    <button class="active" onclick="switchTab('my-meds','pat')">My Medications</button>
+    <button onclick="switchTab('family','pat')">Family Health</button>
+    <button onclick="switchTab('prescriptions','pat')">Prescriptions</button>
+    <button onclick="switchTab('upload-rx','pat')">Upload Rx</button>
+  </div>
+  <div id="my-meds" class="pat-tab">
+    <div class="card" style="padding:1rem;">
+      <div class="card-title">Today's Medications</div>
+      <div class="med-card"><div class="med-info"><h4>Metformin 500mg</h4><p>For Type 2 Diabetes · 1 tablet</p></div><span class="med-time">8:00 AM ✓</span></div>
+      <div class="med-card"><div class="med-info"><h4>Atorvastatin 10mg</h4><p>For High Cholesterol · 1 tablet</p></div><span class="med-time">8:00 PM</span></div>
+      <div class="med-card" style="border-left-color:var(--red);"><div class="med-info"><h4>Amlodipine 5mg</h4><p>For Hypertension · 1 tablet · ⚠ Refill due</p></div><span class="med-time" style="background:var(--red);color:white;">Refill</span></div>
+      <div class="med-card"><div class="med-info"><h4>Vitamin D3 1000IU</h4><p>Supplement · 1 capsule</p></div><span class="med-time">With Lunch</span></div>
+    </div>
+  </div>
+  <div id="family" class="pat-tab" style="display:none;">
+    <div class="card">
+      <div class="card-title">Family Members</div>
+      <div class="family-member" onclick="showFamilyMeds('Rajesh Sharma (Husband)')">
+        <div class="avatar" style="background:var(--blue);">RS</div>
+        <div><div style="font-weight:600;font-size:14px;">Rajesh Sharma</div><div style="font-size:12px;color:var(--gray-400);">Husband · Age 45 · 2 medications</div></div>
+        <span style="margin-left:auto;color:var(--gray-400);">›</span>
+      </div>
+      <div class="family-member" onclick="showFamilyMeds('Anaya Sharma (Daughter)')">
+        <div class="avatar" style="background:var(--red-mid);">AS</div>
+        <div><div style="font-weight:600;font-size:14px;">Anaya Sharma</div><div style="font-size:12px;color:var(--gray-400);">Daughter · Age 12 · 1 medication</div></div>
+        <span style="margin-left:auto;color:var(--gray-400);">›</span>
+      </div>
+      <div class="family-member" onclick="showFamilyMeds('Sunita Sharma (Mother)')">
+        <div class="avatar" style="background:var(--success);">SS</div>
+        <div><div style="font-weight:600;font-size:14px;">Sunita Sharma</div><div style="font-size:12px;color:var(--gray-400);">Mother · Age 68 · 4 medications</div></div>
+        <span style="margin-left:auto;color:var(--gray-400);">›</span>
+      </div>
+      <button class="btn btn-outline" style="margin-top:1rem;width:100%;">+ Add Family Member</button>
+    </div>
+  </div>
+  <div id="prescriptions" class="pat-tab" style="display:none;">
+    <div class="rx-card" style="margin-bottom:1.5rem;">
+      <div class="rx-header">
+        <div class="rx-logo">MS</div>
+        <div>
+          <div style="font-weight:700;font-size:15px;color:var(--blue-dark);">MediSync Certified Prescription</div>
+          <div style="font-size:12px;color:var(--gray-400);">City General Hospital · Issued: 1 Dec 2024</div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-bottom:1rem;">
+        <div><label>Patient</label><div style="font-weight:600;">Priya Sharma, 38F</div></div>
+        <div><label>Doctor</label><div style="font-weight:600;">Dr. Arjun Mehta (MCI-7823)</div></div>
+      </div>
+      <div style="background:var(--gray-50);border-radius:8px;padding:1rem;margin-bottom:1rem;">
+        <div style="font-size:12px;font-weight:600;color:var(--gray-400);margin-bottom:8px;">PRESCRIBED MEDICATIONS</div>
+        <div style="font-size:14px;">① Metformin 500mg — 1 tab twice daily after meals · 90 days</div>
+        <div style="font-size:14px;margin-top:4px;">② Atorvastatin 10mg — 1 tab at bedtime · 90 days</div>
+        <div style="font-size:14px;margin-top:4px;">③ Amlodipine 5mg — 1 tab daily morning · 30 days</div>
+      </div>
+      <div class="rx-stamp">
+        <div style="font-size:10px;letter-spacing:1px;opacity:0.7;margin-bottom:4px;">DIGITALLY VERIFIED</div>
+        <div class="stamp-ring">✦ MEDISYNC · CGH-2024-RX-08472 ✦</div>
+        <div style="font-size:10px;margin-top:4px;opacity:0.7;">Valid until: 01 Mar 2025</div>
+      </div>
+    </div>
+  </div>
+  <div id="upload-rx" class="pat-tab" style="display:none;">
+    <div class="card">
+      <div class="card-title">Upload Paper Prescription</div>
+      <div class="alert alert-info">Prescriptions are valid only when they carry the doctor's digital stamp along with the MediSync site logo. Uploaded prescriptions are verified by our medical team within 2 hours.</div>
+      <div class="upload-zone" onclick="alert('File picker would open here in production')">
+        <div class="icon">📄</div>
+        <p style="font-weight:600;margin-bottom:4px;">Drag & Drop or Click to Upload</p>
+        <p>Supported: JPG, PNG, PDF (Max 10MB)</p>
+      </div>
+      <div style="margin-top:1.5rem;">
+        <div class="alert alert-warn">⚠ Important: Only prescriptions with the official MediSync digital stamp and the site's logo are considered valid. Screenshots or photocopies without official stamps will be rejected.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCTOR DASHBOARD -->
+<section id="doctor-dashboard">
+  <div class="section-header">
+    <h2>Dr. Arjun Mehta</h2>
+    <p>MCI Reg. No: MCI-7823 · City General Hospital · Cardiologist &nbsp;|&nbsp; <span class="badge badge-blue">Verified Doctor</span></p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card red"><div class="stat-num">18</div><div class="stat-label">Today's Patients</div></div>
+    <div class="stat-card blue"><div class="stat-num">284</div><div class="stat-label">Medicines in Stock</div></div>
+    <div class="stat-card green"><div class="stat-num">12</div><div class="stat-label">Rx Issued Today</div></div>
+    <div class="stat-card warn"><div class="stat-num">7</div><div class="stat-label">Low Stock Alerts</div></div>
+  </div>
+  <div class="tabs">
+    <button class="active" onclick="switchTab('doc-inventory','doc')">Hospital Inventory</button>
+    <button onclick="switchTab('doc-patients','doc')">My Patients</button>
+    <button onclick="switchTab('doc-rx','doc')">Issue Prescription</button>
+  </div>
+  <div id="doc-inventory" class="doc-tab">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div class="card-title" style="margin:0;border:none;padding:0;">Hospital Medicine Inventory</div>
+        <input type="text" style="width:240px;" placeholder="Filter medicines..." oninput="filterInventory(this.value)"/>
+      </div>
+      <table class="inv-table" id="inv-table">
+        <thead><tr><th>Medicine</th><th>Category</th><th>Stock Level</th><th>Units</th><th>Status</th></tr></thead>
+        <tbody id="inv-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="doc-patients" class="doc-tab" style="display:none;">
+    <div class="card">
+      <div class="card-title">Today's Patient Queue</div>
+      <div class="patient-row"><div class="patient-info"><div class="avatar" style="background:var(--blue);width:36px;height:36px;font-size:13px;">PS</div><div class="det"><h4>Priya Sharma, 38F</h4><p>Hypertension follow-up · 09:00 AM</p></div></div><span class="badge badge-green">Completed</span></div>
+      <div class="patient-row"><div class="patient-info"><div class="avatar" style="background:var(--red-mid);width:36px;height:36px;font-size:13px;">RK</div><div class="det"><h4>Ravi Kumar, 55M</h4><p>Chest pain evaluation · 10:30 AM</p></div></div><span class="badge badge-red">In Progress</span></div>
+      <div class="patient-row"><div class="patient-info"><div class="avatar" style="background:var(--success);width:36px;height:36px;font-size:13px;">MA</div><div class="det"><h4>Meera Agarwal, 42F</h4><p>Diabetes review · 11:00 AM</p></div></div><span class="badge badge-warn">Waiting</span></div>
+      <div class="patient-row"><div class="patient-info"><div class="avatar" style="background:var(--warn);width:36px;height:36px;font-size:13px;">AS</div><div class="det"><h4>Amit Singh, 62M</h4><p>Post-surgery checkup · 12:00 PM</p></div></div><span class="badge" style="background:var(--gray-100);color:var(--gray-400);">Scheduled</span></div>
+    </div>
+  </div>
+  <div id="doc-rx" class="doc-tab" style="display:none;">
+    <div class="card">
+      <div class="card-title">Issue Digital Prescription</div>
+      <div class="grid2">
+        <div class="form-group"><label>Patient Name</label><input type="text" placeholder="Search patient..." /></div>
+        <div class="form-group"><label>Patient ID</label><input type="text" placeholder="e.g. PAT-20241205" /></div>
+        <div class="form-group"><label>Diagnosis / Condition</label><input type="text" placeholder="Primary diagnosis" /></div>
+        <div class="form-group"><label>Visit Date</label><input type="date" /></div>
+      </div>
+      <div class="form-group"><label>Prescription Medications</label><textarea style="height:100px;" placeholder="List medicines, dosage, and instructions..."></textarea></div>
+      <div class="form-group"><label>Doctor's Notes</label><textarea style="height:80px;" placeholder="Additional instructions, diet, lifestyle..."></textarea></div>
+      <div class="alert alert-info" style="margin-top:0.5rem;">Clicking 'Issue Prescription' will apply your verified MediSync digital stamp (MCI-7823) to the prescription, making it officially valid.</div>
+      <button class="btn btn-primary" style="margin-top:0.5rem;" onclick="alert('Prescription issued with digital stamp! Ref: CGH-2024-RX-08473')">🔏 Issue Prescription with Digital Stamp</button>
+    </div>
+  </div>
+</section>
+
+<!-- MODALS -->
+<div class="modal-overlay hidden" id="login-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <div class="logo-badge">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L4 7v5c0 5.25 3.41 10.15 8 11.34C16.59 22.15 20 17.25 20 12V7L12 2z"/>
+        <path d="M11 7h2v4h4v2h-4v4h-2v-4H7v-2h4V7z" fill="#E74C3C"/>
+      </svg>
+    </div>
+    <h2>MediSync Portal</h2>
+    <p class="sub">Secure healthcare login</p>
+    <div class="tabs-login" id="login-tabs">
+      <button class="active" onclick="switchLoginTab('patient')">Patient</button>
+      <button onclick="switchLoginTab('doctor')">Doctor</button>
+    </div>
+    <div id="patient-login-form">
+      <button class="social-btn" onclick="patientLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+      <button class="social-btn" onclick="patientLogin()">
+        📱 Continue with Mobile Number
+      </button>
+      <div class="login-divider">or</div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="your@email.com" /></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="Enter password" /></div>
+      <button class="btn btn-primary" style="width:100%;padding:11px;" onclick="patientLogin()">Login as Patient</button>
+      <p style="text-align:center;font-size:12px;color:var(--gray-400);margin-top:1rem;">Don't have an account? <a href="#" style="color:var(--blue-mid);">Register here</a></p>
+    </div>
+    <div id="doctor-login-form" style="display:none;">
+      <div class="alert alert-info" style="margin-bottom:1rem;">Doctor accounts require verification of your Medical Council registration ID.</div>
+      <div class="form-group"><label>Doctor Email</label><input type="email" placeholder="doctor@hospital.com" /></div>
+      <div class="form-group"><label>MCI / Medical Council Registration ID</label><input type="text" placeholder="e.g. MCI-7823" /></div>
+      <div class="form-group"><label>Hospital Affiliation Code</label><input type="text" placeholder="Provided by your hospital" /></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="Enter password" /></div>
+      <button class="btn btn-blue" style="width:100%;padding:11px;" onclick="doctorLogin()">Verify & Login as Doctor</button>
+      <p style="text-align:center;font-size:12px;color:var(--gray-400);margin-top:1rem;">Need to register your clinic? <a href="#" style="color:var(--blue-mid);">Contact MediSync</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="family-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('family-modal').classList.add('hidden')">×</button>
+    <h3 id="family-modal-title">Family Member Medications</h3>
+    <div id="family-modal-body"></div>
+  </div>
+</div>
+
+<footer>
+  <strong>MediSync</strong> — Smart Hospital Medicine Availability Platform &nbsp;·&nbsp; Not a substitute for professional medical advice &nbsp;·&nbsp; © 2024 MediSync Health Technologies
+</footer>
+
+<script>
+const medicines = [
+  { name: 'Paracetamol 500mg', generic: 'Acetaminophen', category: 'Analgesic / Antipyretic', uses: 'Relieves mild to moderate pain and reduces fever. Used for headaches, toothaches, muscle pain, colds, and flu.', precautions: 'Do not exceed 4g/day. Avoid alcohol. Use caution in liver disease. Do not combine with other paracetamol-containing products.', availability: 'high', units: 2400, interaction: 'Warfarin, alcohol' },
+  { name: 'Amoxicillin 500mg', generic: 'Amoxicillin Trihydrate', category: 'Antibiotic (Penicillin)', uses: 'Treats bacterial infections including throat, ear, chest, urinary tract, and skin infections. Often used for Helicobacter pylori.', precautions: 'Complete the full course. May cause allergic reactions in penicillin-sensitive patients. Take with or without food.', availability: 'medium', units: 850, interaction: 'Warfarin, methotrexate' },
+  { name: 'Ibuprofen 400mg', generic: 'Ibuprofen', category: 'NSAID / Anti-inflammatory', uses: 'Reduces inflammation, relieves pain and fever. Used for arthritis, menstrual cramps, dental pain, and sports injuries.', precautions: 'Take with food to reduce stomach upset. Avoid in kidney disease, stomach ulcers. Limit use in elderly. Not for children under 6 months.', availability: 'high', units: 1800, interaction: 'Aspirin, blood thinners, SSRIs' },
+  { name: 'Metformin 500mg', generic: 'Metformin HCl', category: 'Antidiabetic (Biguanide)', uses: 'First-line treatment for Type 2 Diabetes Mellitus. Lowers blood glucose by reducing liver glucose production and improving insulin sensitivity.', precautions: 'Take with meals. Avoid in severe kidney or liver disease. Temporarily stop before contrast dye procedures. Monitor B12 levels long-term.', availability: 'high', units: 3200, interaction: 'Alcohol, contrast dye, diuretics' },
+  { name: 'Atorvastatin 10mg', generic: 'Atorvastatin Calcium', category: 'Statin / Lipid-lowering', uses: 'Lowers LDL cholesterol and triglycerides. Reduces risk of heart attack and stroke in patients with cardiovascular risk factors.', precautions: 'Take at the same time daily. Report unexplained muscle pain immediately. Avoid grapefruit juice. Avoid in pregnancy and liver disease.', availability: 'high', units: 2100, interaction: 'Grapefruit, warfarin, niacin, antifungals' },
+  { name: 'Azithromycin 250mg', generic: 'Azithromycin', category: 'Antibiotic (Macrolide)', uses: 'Treats respiratory infections, skin infections, STIs, and ear infections. Used as alternative for penicillin-allergic patients.', precautions: 'Complete the full course. May prolong QT interval. Use caution with heart conditions. Avoid antacids within 2 hours of dose.', availability: 'low', units: 120, interaction: 'QT-prolonging drugs, antacids, warfarin' },
+  { name: 'Omeprazole 20mg', generic: 'Omeprazole', category: 'Proton Pump Inhibitor', uses: 'Treats acid reflux (GERD), stomach ulcers, and H. pylori (in combination). Reduces gastric acid production.', precautions: 'Take 30–60 min before meals. Long-term use may lower magnesium. May mask stomach cancer symptoms.', availability: 'high', units: 1900, interaction: 'Clopidogrel, methotrexate, iron supplements' },
+  { name: 'Vitamin D3 1000IU', generic: 'Cholecalciferol', category: 'Supplement / Vitamin', uses: 'Treats and prevents Vitamin D deficiency. Supports calcium absorption, bone health, immune function, and muscle strength.', precautions: 'Take with a fatty meal for better absorption. Avoid excessive doses (toxicity risk). Regular blood level monitoring recommended.', availability: 'high', units: 4500, interaction: 'Thiazide diuretics, digoxin' },
+];
+
+const diseases = {
+  'Diabetes': { full: 'Type 2 Diabetes Mellitus', symptoms: ['Increased thirst & urination','Fatigue and weakness','Blurred vision','Slow-healing wounds','Frequent infections','Unexplained weight loss','Tingling in hands/feet'], precautions: ['Monitor blood sugar daily','Low-sugar, high-fiber diet','Regular physical exercise','Avoid smoking & alcohol','Annual eye and kidney check','Keep feet clean and dry'], medications: ['Metformin 500–2000mg/day','Glipizide (if needed)','Insulin (advanced cases)','Vitamin D3 supplement','Blood pressure meds if needed'] },
+  'Hypertension': { full: 'High Blood Pressure (Hypertension)', symptoms: ['Often no symptoms (silent)','Headaches (severe)','Shortness of breath','Nosebleeds','Dizziness','Chest pain (emergency)','Vision changes'], precautions: ['Reduce salt intake to <5g/day','DASH diet recommended','Exercise 30 min daily','Limit alcohol consumption','Quit smoking','Manage stress','Monitor BP regularly'], medications: ['Amlodipine 5–10mg','Lisinopril 10–40mg','Losartan 25–100mg','Hydrochlorothiazide 12.5–25mg','Atenolol (if needed)'] },
+  'Influenza': { full: 'Influenza (Flu)', symptoms: ['Sudden fever (38–40°C)','Body aches and chills','Severe headache','Dry persistent cough','Sore throat','Runny or stuffy nose','Fatigue (can be severe)'], precautions: ['Annual flu vaccination','Wash hands frequently','Avoid close contact with sick','Wear mask in crowds','Rest and hydrate well','Stay home if symptomatic'], medications: ['Paracetamol 500mg (fever/pain)','Ibuprofen 400mg (inflammation)','Oseltamivir (Tamiflu) within 48hrs','Loratadine (nasal symptoms)','Zinc + Vitamin C supplements'] },
+  'Asthma': { full: 'Bronchial Asthma', symptoms: ['Wheezing (whistling breath)','Shortness of breath','Chest tightness','Coughing (worse at night)','Difficulty speaking','Rapid breathing','Bluish lips (severe)'], precautions: ['Avoid known triggers (dust, pollen, smoke)','Always carry rescue inhaler','Follow asthma action plan','Get flu vaccine annually','Use air purifier at home','Avoid vigorous cold-air exercise'], medications: ['Salbutamol inhaler (rescue)','Budesonide inhaler (preventer)','Montelukast 10mg (controller)','Theophylline (severe cases)','Prednisolone (acute flares)'] },
+  'Malaria': { full: 'Malaria (P. falciparum / P. vivax)', symptoms: ['Cyclical high fever & chills','Profuse sweating','Severe headache','Nausea and vomiting','Muscle pain and fatigue','Anemia (pale appearance)','Enlarged spleen'], precautions: ['Use mosquito nets (insecticide-treated)','Apply DEET repellent','Wear long-sleeved clothing','Take prophylaxis before travel','Eliminate stagnant water near home','Seek care immediately if fever in endemic area'], medications: ['Artemether-Lumefantrine (P. falciparum)','Chloroquine (P. vivax, if sensitive)','Primaquine (prevents relapse)','Paracetamol (fever management)','IV Artesunate (severe cases)'] },
+};
+
+const inventory = [
+  { name: 'Paracetamol 500mg', cat: 'Analgesic', stock: 95, units: 2400 },
+  { name: 'Amoxicillin 500mg', cat: 'Antibiotic', stock: 42, units: 850 },
+  { name: 'Ibuprofen 400mg', cat: 'NSAID', stock: 78, units: 1800 },
+  { name: 'Metformin 500mg', cat: 'Antidiabetic', stock: 88, units: 3200 },
+  { name: 'Atorvastatin 10mg', cat: 'Statin', stock: 91, units: 2100 },
+  { name: 'Azithromycin 250mg', cat: 'Antibiotic', stock: 12, units: 120 },
+  { name: 'Omeprazole 20mg', cat: 'PPI', stock: 83, units: 1900 },
+  { name: 'Amlodipine 5mg', cat: 'Antihypertensive', stock: 65, units: 720 },
+  { name: 'Vitamin D3 1000IU', cat: 'Supplement', stock: 99, units: 4500 },
+  { name: 'Lisinopril 10mg', cat: 'ACE Inhibitor', stock: 58, units: 640 },
+  { name: 'Montelukast 10mg', cat: 'Antiasthmatic', stock: 34, units: 280 },
+  { name: 'Losartan 50mg', cat: 'ARB', stock: 71, units: 850 },
+  { name: 'Salbutamol Inhaler', cat: 'Bronchodilator', stock: 8, units: 45 },
+  { name: 'Insulin Glargine', cat: 'Antidiabetic', stock: 22, units: 95 },
+];
+
+const emergency = [
+  { country: '🇮🇳 India', nums: [{ s: 'National Emergency', n: '112' }, { s: 'Police', n: '100' }, { s: 'Fire', n: '101' }, { s: 'Ambulance', n: '108' }, { s: 'Women Helpline', n: '1091' }, { s: 'Child Helpline', n: '1098' }] },
+  { country: '🇺🇸 United States', nums: [{ s: 'Emergency (All)', n: '911' }, { s: 'Poison Control', n: '1-800-222-1222' }, { s: 'Mental Health Crisis', n: '988' }, { s: 'Coast Guard', n: '1-800-323-7233' }] },
+  { country: '🇬🇧 United Kingdom', nums: [{ s: 'Emergency (All)', n: '999' }, { s: 'NHS Non-Emergency', n: '111' }, { s: 'Police Non-Emergency', n: '101' }, { s: 'Samaritans', n: '116 123' }] },
+  { country: '🇦🇺 Australia', nums: [{ s: 'Emergency (All)', n: '000' }, { s: 'Lifeline', n: '13 11 14' }, { s: 'Poison Info', n: '13 11 26' }, { s: 'Police', n: '131 444' }] },
+  { country: '🇨🇦 Canada', nums: [{ s: 'Emergency (All)', n: '911' }, { s: 'Poison Control', n: '1-800-268-9017' }, { s: 'Kids Help Phone', n: '1-800-668-6868' }, { s: 'Crisis Line', n: '1-800-784-2433' }] },
+  { country: '🇩🇪 Germany', nums: [{ s: 'Emergency (EU)', n: '112' }, { s: 'Police', n: '110' }, { s: 'Poison Control', n: '030 192 40' }, { s: 'Telefonseelsorge', n: '0800 111 0 111' }] },
+  { country: '🇫🇷 France', nums: [{ s: 'Emergency (EU)', n: '112' }, { s: 'SAMU (Medical)', n: '15' }, { s: 'Police', n: '17' }, { s: 'Fire (Sapeurs)', n: '18' }] },
+  { country: '🇯🇵 Japan', nums: [{ s: 'Police', n: '110' }, { s: 'Fire & Ambulance', n: '119' }, { s: 'Coast Guard', n: '118' }, { s: 'English Crisis', n: '03-5774-0992' }] },
+  { country: '🇧🇷 Brazil', nums: [{ s: 'Emergency (All)', n: '190/192/193' }, { s: 'Police (SAMU)', n: '190' }, { s: 'Ambulance', n: '192' }, { s: 'Fire', n: '193' }] },
+  { country: '🇿🇦 South Africa', nums: [{ s: 'Emergency', n: '10111' }, { s: 'Ambulance', n: '10177' }, { s: 'Netcare 911', n: '082 911' }, { s: 'Childline', n: '0800 055 555' }] },
+  { country: '🇦🇪 UAE', nums: [{ s: 'Police', n: '999' }, { s: 'Ambulance', n: '998' }, { s: 'Fire', n: '997' }, { s: 'Coastguard', n: '996' }] },
+  { country: '🇸🇬 Singapore', nums: [{ s: 'Police', n: '999' }, { s: 'Fire & Ambulance', n: '995' }, { s: 'Non-Emergency', n: '1800-255-0000' }, { s: 'Samaritans', n: '1-767' }] },
+];
+
+function showSection(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if (sec) { sec.classList.add('active'); window.scrollTo(0, 0); }
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  const navMap = { home: 0, medicines: 1, disease: 2, emergency: 3 };
+  const idx = navMap[id];
+  if (idx !== undefined) document.querySelectorAll('.nav-links button')[idx].classList.add('active');
+  if (id === 'emergency' && !document.getElementById('emergency-list').innerHTML) renderEmergency();
+  if (id === 'doctor-dashboard' && !document.getElementById('inv-body').innerHTML) renderInventory();
+}
+
+function showLogin(type) {
+  document.getElementById('login-modal').classList.remove('hidden');
+  switchLoginTab(type);
+}
+function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
+function switchLoginTab(type) {
+  const tabs = document.querySelectorAll('#login-tabs button');
+  tabs.forEach((b, i) => { b.classList.toggle('active', (i === 0 && type === 'patient') || (i === 1 && type === 'doctor')); });
+  document.getElementById('patient-login-form').style.display = type === 'patient' ? 'block' : 'none';
+  document.getElementById('doctor-login-form').style.display = type === 'doctor' ? 'block' : 'none';
+}
+function patientLogin() { closeLogin(); showSection('patient-dashboard'); }
+function doctorLogin() { closeLogin(); showSection('doctor-dashboard'); renderInventory(); }
+
+function switchTab(id, group) {
+  document.querySelectorAll('.' + group + '-tab').forEach(t => t.style.display = 'none');
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'block';
+  document.querySelectorAll('.tabs button').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'"));
+  });
+}
+
+function searchMeds() {
+  const q = document.getElementById('med-search').value.toLowerCase();
+  const res = q.length < 2 ? [] : medicines.filter(m => m.name.toLowerCase().includes(q) || m.generic.toLowerCase().includes(q) || m.category.toLowerCase().includes(q) || m.uses.toLowerCase().includes(q));
+  renderMedResults(res, q);
+}
+function quickSearch(name) { document.getElementById('med-search').value = name; searchMeds(); }
+function renderMedResults(res, q) {
+  const el = document.getElementById('med-results');
+  if (!q || q.length < 2) { el.innerHTML = ''; return; }
+  if (!res.length) { el.innerHTML = '<div class="card" style="text-align:center;color:var(--gray-400);padding:2rem;">No medicines found for "' + q + '". Try a different name or generic term.</div>'; return; }
+  el.innerHTML = res.map(m => {
+    const ac = m.availability === 'high' ? 'green' : m.availability === 'medium' ? 'warn' : 'red';
+    const al = m.availability === 'high' ? 'In Stock' : m.availability === 'medium' ? 'Limited' : 'Low Stock';
+    return `<div class="result-card">
+      <h3>${m.name} <span style="font-size:12px;font-weight:400;color:var(--gray-400);">(${m.generic})</span></h3>
+      <div class="meta"><span class="badge badge-blue">${m.category}</span><span><span class="avail-dot ${ac}"></span><span style="font-size:12px;font-weight:500;">${al} · ${m.units.toLocaleString()} units</span></span></div>
+      <div style="margin-bottom:8px;"><strong style="font-size:12px;color:var(--blue-dark);">USES:</strong><p>${m.uses}</p></div>
+      <div style="margin-bottom:8px;"><strong style="font-size:12px;color:var(--red);">PRECAUTIONS:</strong><p>${m.precautions}</p></div>
+      <div><strong style="font-size:12px;color:var(--gray-400);">KNOWN INTERACTIONS:</strong><p>${m.interaction}</p></div>
+    </div>`;
+  }).join('');
+}
+
+function searchDisease() { lookupDisease(document.getElementById('dis-search').value); }
+function lookupDisease(name) {
+  document.getElementById('dis-search').value = name;
+  const key = Object.keys(diseases).find(k => k.toLowerCase() === name.toLowerCase()) || Object.keys(diseases).find(k => k.toLowerCase().includes(name.toLowerCase()));
+  const el = document.getElementById('dis-result');
+  if (!key) { el.innerHTML = '<div class="card" style="text-align:center;color:var(--gray-400);padding:2rem;">Condition not found. Try: Diabetes, Hypertension, Influenza, Asthma, or Malaria.</div>'; return; }
+  const d = diseases[key];
+  el.innerHTML = `<div class="dis-result">
+    <h3>${d.full}</h3>
+    <div class="dis-section"><h4>Symptoms</h4><div class="tag-list">${d.symptoms.map(s => `<span class="tag tag-sym">${s}</span>`).join('')}</div></div>
+    <div class="dis-section"><h4>Precautions & Lifestyle</h4><div class="tag-list">${d.precautions.map(p => `<span class="tag tag-pre">${p}</span>`).join('')}</div></div>
+    <div class="dis-section"><h4>Common Medications</h4><div class="tag-list">${d.medications.map(m => `<span class="tag tag-med">${m}</span>`).join('')}</div></div>
+    <div style="margin-top:1rem;padding:1rem;background:var(--warn-light);border-radius:8px;font-size:12px;color:var(--warn);"><strong>Disclaimer:</strong> This information is educational only. Always consult a qualified doctor before starting, stopping, or changing any medication.</div>
+  </div>`;
+}
+
+function renderEmergency() {
+  const el = document.getElementById('emergency-list');
+  el.innerHTML = emergency.map(c => `
+    <div class="country-section">
+      <div class="country-title">${c.country}</div>
+      <div class="em-numbers">${c.nums.map(n => `<div class="em-num-card"><span class="service">${n.s}</span><span class="number">${n.n}</span></div>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function renderInventory(filter = '') {
+  const tbody = document.getElementById('inv-body');
+  if (!tbody) return;
+  const data = filter ? inventory.filter(i => i.name.toLowerCase().includes(filter.toLowerCase()) || i.cat.toLowerCase().includes(filter.toLowerCase())) : inventory;
+  tbody.innerHTML = data.map(item => {
+    const color = item.stock > 50 ? 'var(--success)' : item.stock > 20 ? '#E67E22' : 'var(--red-mid)';
+    const status = item.stock > 50 ? '<span class="badge badge-green">In Stock</span>' : item.stock > 20 ? '<span class="badge badge-warn">Limited</span>' : '<span class="badge badge-red">Low Stock</span>';
+    return `<tr><td><strong>${item.name}</strong></td><td><span class="badge badge-blue">${item.cat}</span></td>
+      <td><div class="stock-bar"><div class="stock-fill" style="width:${item.stock}%;background:${color};"></div></div></td>
+      <td>${item.units.toLocaleString()}</td><td>${status}</td></tr>`;
+  }).join('');
+}
+
+function filterInventory(v) { renderInventory(v); }
+
+function showFamilyMeds(member) {
+  const meds = {
+    'Rajesh Sharma (Husband)': ['Atorvastatin 20mg — 1 tab at bedtime (Cholesterol)', 'Aspirin 75mg — 1 tab daily (Heart health)'],
+    'Anaya Sharma (Daughter)': ['Montelukast 5mg — 1 tab at bedtime (Asthma)'],
+    'Sunita Sharma (Mother)': ['Amlodipine 5mg — 1 tab morning (BP)', 'Metformin 500mg — 1 tab twice daily (Diabetes)', 'Omeprazole 20mg — 1 cap before breakfast (Acidity)', 'Vitamin D3 1000IU — 1 cap with lunch (Supplement)'],
+  };
+  document.getElementById('family-modal-title').textContent = member + ' — Medications';
+  document.getElementById('family-modal-body').innerHTML = (meds[member] || ['No medications on record.']).map(m => `<div class="med-card" style="display:block;padding:12px 14px;"><p style="font-size:14px;color:var(--gray-700);">💊 ${m}</p></div>`).join('');
+  document.getElementById('family-modal').classList.remove('hidden');
+}
+
+document.getElementById('login-modal').addEventListener('click', function(e){ if(e.target===this) closeLogin(); });
+document.getElementById('family-modal').addEventListener('click', function(e){ if(e.target===this) this.classList.add('hidden'); });
+</script>
+</body>
+</html>
